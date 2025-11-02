@@ -3,19 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/styles.css" />
   <title>LoboCaf – Admin Panel</title>
 </head>
 <body>
   <h1>LoboCaf – Panel Administrativo</h1>
 
-  <section id="auth">
-    <h2>Inicio de sesión</h2>
-    <p><small>Solo Email/Password (usuarios creados desde la consola de Firebase).</small></p>
-    <input id="email" type="email" placeholder="correo@ejemplo.com" />
-    <input id="password" type="password" placeholder="Contraseña" />
-    <button id="loginBtn">Iniciar sesión</button>
-    <p id="authStatus"></p>
+  <section id="auth" class="card">
+    <h2 class="title">Inicio de sesión</h2>
+    <p class="hint"><small>Solo Email/Password (usuarios creados en Firebase).</small></p>
+
+    <label for="email" class="label">Correo</label>
+    <input id="email" type="email" class="input" placeholder="correo@ejemplo.com"
+          autocomplete="email" required />
+
+    <label for="password" class="label">Contraseña</label>
+    <input id="password" type="password" class="input" placeholder="Contraseña"
+          autocomplete="current-password" required />
+
+    <button id="loginBtn" class="btn" aria-live="polite">Iniciar sesión</button>
+    <p id="authStatus" class="status" role="status" aria-live="polite"></p>
   </section>
+
 
   <section id="app" style="display:none">
     <h2>Productos</h2>
