@@ -40,3 +40,8 @@ h1{margin:0 0 24px;font-size:28px}
   border-radius:10px; cursor:pointer; line-height:1;
 }
 .btn-ghost:hover{ background:#f3f4f6 }
+
+.btn:disabled{ opacity:.6; cursor:not-allowed }
+.status{ min-height:20px; margin-top:10px }
+.status--error{ color:#b91c1c }
+.status--ok{ color:#065f46 }
