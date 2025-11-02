@@ -249,6 +249,7 @@ if (addForm) {
 
       // Recarga tabla y KPIs
       loadProducts();
+      
     } catch (e) {
       alert(e.message);
     }
