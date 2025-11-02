@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LoboCaf – Admin Panel</title>
+</head>
+<body>
+  <h1>LoboCaf – Panel Administrativo</h1>
+
+  <section id="auth">
+    <h2>Inicio de sesión</h2>
+    <p><small>Solo Email/Password (usuarios creados desde la consola de Firebase).</small></p>
+    <input id="email" type="email" placeholder="correo@ejemplo.com" />
+    <input id="password" type="password" placeholder="Contraseña" />
+    <button id="loginBtn">Iniciar sesión</button>
+    <p id="authStatus"></p>
+  </section>
+
+  <section id="app" style="display:none">
+    <h2>Productos</h2>
+    <form id="addForm">
+      <input id="name" placeholder="Nombre" required />
+      <input id="price" type="number" step="0.01" placeholder="Precio" required />
+      <button>Agregar</button>
+    </form>
+    <ul id="list"></ul>
+    <button id="logoutBtn">Cerrar sesión</button>
+  </section>
+
+  <!-- Firebase Web SDK (compat v9) para usar la API global `firebase.*` -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <script>
+    // Tu configuración real de Firebase (pegada desde la consola)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwFKd3LFrO30e4RguksmnnGjviX2Ynur4",
+      authDomain: "lobocaf-e3f49.firebaseapp.com",
+      projectId: "lobocaf-e3f49",
+      storageBucket: "lobocaf-e3f49.firebasestorage.app",
+      messagingSenderId: "915235060785",
+      appId: "1:915235060785:web:64f688de67911e030d2910",
+      measurementId: "G-XFXH23TBD4"
+    };
+    // Inicializa con el SDK compat (coincide con el front del starter)
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <!-- Lógica del panel (login, fetch a /api/products, etc.) -->
+  <script src="/app.js"></script>
+</body>
+</html>
