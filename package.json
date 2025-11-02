@@ -2,16 +2,22 @@
   "name": "lobocaf-admin-panel",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "node src/app.js",
-    "start": "NODE_ENV=production node src/app.js",
-    "test": "node --test"
+    "dev": "node src/server.js",
+    "start": "node src/server.js",
+    "test": "jest --runInBand"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "firebase-admin": "^12.6.0",
     "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
