@@ -40,8 +40,61 @@ h1{margin:0 0 24px;font-size:28px}
   border-radius:10px; cursor:pointer; line-height:1;
 }
 .btn-ghost:hover{ background:#f3f4f6 }
+.btn:disabled{ opacity:.6; cursor:not-allowed }
+.status{ min-height:20px; margin-top:10px }
+.status--error{ color:#b91c1c }
+.status--ok{ color:#065f46 }
 
 .btn:disabled{ opacity:.6; cursor:not-allowed }
 .status{ min-height:20px; margin-top:10px }
 .status--error{ color:#b91c1c }
 .status--ok{ color:#065f46 }
+
+/* ---- Dashboard layout ---- */
+.dash{max-width:1100px;margin:0 auto;padding:12px}
+.section-title{margin:0 0 16px}
+.cards{
+  display:grid; gap:16px; grid-template-columns: repeat(3, minmax(0,1fr));
+  margin-bottom:16px;
+}
+@media (max-width:900px){ .cards{grid-template-columns:1fr 1fr} }
+@media (max-width:640px){ .cards{grid-template-columns:1fr} }
+
+.card{
+  background:var(--card); border-radius:16px; padding:18px;
+  box-shadow:0 10px 30px rgba(2,6,23,.07), 0 2px 6px rgba(2,6,23,.06);
+  border:1px solid #e5e7eb;
+}
+
+/* KPI cards */
+.kpi-title{font-size:14px;color:#6b7280;margin-bottom:6px}
+.kpi-value{font-size:28px;font-weight:800}
+.kpi-foot{font-size:12px;color:#9ca3af;margin-top:6px}
+.kpi-1{background:linear-gradient(135deg,#f1f5ff, #eef2ff)}
+.kpi-2{background:linear-gradient(135deg,#eff6ff, #e0f2fe)}
+.kpi-3{background:linear-gradient(135deg,#fdf2f8, #fce7f3)}
+
+/* Form */
+.form-card{margin-bottom:16px}
+.form-grid{display:grid; gap:12px; grid-template-columns:1fr 200px 120px}
+@media (max-width:700px){ .form-grid{grid-template-columns:1fr 1fr} .actions{grid-column:1 / -1} }
+.field label{display:block;font-size:13px;color:#374151;margin-bottom:6px}
+.actions{display:flex; align-items:flex-end}
+.btn.primary{background:var(--primary); color:#fff; border:0; border-radius:10px; padding:10px 14px; font-weight:700}
+.btn.primary:hover{background:var(--primary-600)}
+.btn.ghost{border:1px solid #e5e7eb; background:#fff; border-radius:10px; padding:10px 14px}
+.btn.ghost:hover{background:#f3f4f6}
+
+/* Table */
+.table-card .table-scroll{overflow:auto}
+.table{width:100%; border-collapse:separate; border-spacing:0}
+.table thead th{
+  text-align:left; font-size:13px; color:#6b7280; padding:10px 12px; background:#f8fafc;
+  position:sticky; top:0;
+}
+.table tbody td{padding:12px; border-top:1px solid #eef2f7}
+.table tbody tr:hover{background:#fafafa}
+.table .right{text-align:right}
+
+/* Empty */
+.empty{padding:12px; color:#6b7280; background:#f8fafc; border:1px dashed #e5e7eb; border-radius:10px; margin-bottom:8px}

@@ -32,15 +32,66 @@
 
 
   <section id="app" style="display:none">
-    <h2>Productos</h2>
-    <form id="addForm">
-      <input id="name" placeholder="Nombre" required />
-      <input id="price" type="number" step="0.01" placeholder="Precio" required />
-      <button>Agregar</button>
-    </form>
-    <ul id="list"></ul>
-    <button id="logoutBtn">Cerrar sesión</button>
+    <div class="dash">
+      <!-- Métricas -->
+      <div class="cards">
+        <div class="card kpi kpi-1">
+          <div class="kpi-title">Total de productos</div>
+          <div class="kpi-value" id="statsTotal">0</div>
+          <div class="kpi-foot">Actualizado ahora</div>
+        </div>
+        <div class="card kpi kpi-2">
+          <div class="kpi-title">Precio promedio</div>
+          <div class="kpi-value" id="statsAvg">$0.00</div>
+          <div class="kpi-foot">Promedio simple</div>
+        </div>
+        <div class="card kpi kpi-3">
+          <div class="kpi-title">Producto más caro</div>
+          <div class="kpi-value" id="statsMax">$0.00</div>
+          <div class="kpi-foot" id="statsMaxName">—</div>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="card form-card">
+        <h2 class="section-title">Agregar producto</h2>
+        <form id="addForm" class="form-grid">
+          <div class="field">
+            <label for="name">Nombre</label>
+            <input id="name" class="input" placeholder="Capuchino" required />
+          </div>
+          <div class="field">
+            <label for="price">Precio</label>
+            <input id="price" class="input" type="number" step="0.01" placeholder="35.00" required />
+          </div>
+          <div class="actions">
+            <button class="btn primary">Agregar</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Tabla -->
+      <div class="card table-card">
+        <h2 class="section-title">Productos</h2>
+        <div id="emptyState" class="empty">Aún no hay productos. Agrega el primero con el formulario superior.</div>
+        <div class="table-scroll">
+          <table class="table" id="productsTable">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th class="right">Precio</th>
+              </tr>
+            </thead>
+            <tbody id="productsTableBody"></tbody>
+          </table>
+        </div>
+        <div class="card-foot">
+          <button id="logoutBtn" class="btn ghost">Cerrar sesión</button>
+        </div>
+      </div>
+    </div>
   </section>
+
 
   <!-- Firebase Web SDK (compat v9) para usar la API global `firebase.*` -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
