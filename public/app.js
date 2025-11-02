@@ -23,7 +23,17 @@ function setLoading(isLoading) {
 }
 
 function showError(message) {
-  if (authStatus) authStatus.textContent = message || '';
+  if (!authStatus) return;
+  authStatus.classList.remove('status--ok');
+  authStatus.classList.add('status--error');
+  authStatus.textContent = message || '';
+}
+
+function showOk(message) {
+  if (!authStatus) return;
+  authStatus.classList.remove('status--error');
+  authStatus.classList.add('status--ok');
+  authStatus.textContent = message || '';
 }
 
 // NUEVO: validación simple de email y habilitar botón
@@ -35,12 +45,15 @@ function updateLoginEnabled() {
   const ok =
     isValidEmail((emailInput?.value || '').trim()) &&
     ((passwordInput?.value || '').trim()).length >= 6;
-  loginBtn.disabled = !ok;
+  // Si está cargando, respetamos el disabled por loading
+  if (loginBtn.textContent !== 'Ingresando…') {
+    loginBtn.disabled = !ok;
+  }
 }
 // listeners para validación en tiempo real
 emailInput?.addEventListener('input', updateLoginEnabled);
 passwordInput?.addEventListener('input', updateLoginEnabled);
-// evalúa estado inicial
+// evalúa estado inicial (deshabilita si no es válido)
 updateLoginEnabled();
 
 // NUEVO: toggle mostrar/ocultar contraseña (si existe el botón en el HTML)
@@ -60,14 +73,14 @@ if (loginBtn) {
     const email = (emailInput?.value || '').trim();
     const password = (passwordInput?.value || '').trim();
 
-    showError('');
+    // limpia estado
+    if (authStatus) authStatus.textContent = '';
     setLoading(true);
 
     try {
       await auth.signInWithEmailAndPassword(email, password);
-
-      // (Opcional) feedback breve antes de cambiar vista
-      // if (authStatus) { authStatus.textContent = 'Ingreso correcto…'; }
+      // Feedback breve (opcional): se ocultará de inmediato al cambiar de vista
+      showOk('Ingreso correcto…');
     } catch (e) {
       const map = {
         'auth/invalid-email': 'El correo no es válido.',
@@ -79,6 +92,7 @@ if (loginBtn) {
       showError(map[e.code] || ('Error: ' + e.message));
     } finally {
       setLoading(false);
+      updateLoginEnabled(); // re-evalúa disabled según inputs
     }
   });
 }
@@ -108,6 +122,8 @@ auth.onAuthStateChanged(async (user) => {
     idToken = null;
     if (authSection) authSection.style.display = 'block';
     if (appSection) appSection.style.display = 'none';
+    // Al volver al login, revalida botón
+    updateLoginEnabled();
   }
 });
 
