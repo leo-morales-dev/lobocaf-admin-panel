@@ -36,7 +36,7 @@ function showOk(message) {
   authStatus.textContent = message || '';
 }
 
-// NUEVO: validación simple de email y habilitar botón
+// Validación simple de email y habilitar botón
 function isValidEmail(s) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
@@ -45,18 +45,15 @@ function updateLoginEnabled() {
   const ok =
     isValidEmail((emailInput?.value || '').trim()) &&
     ((passwordInput?.value || '').trim()).length >= 6;
-  // Si está cargando, respetamos el disabled por loading
   if (loginBtn.textContent !== 'Ingresando…') {
     loginBtn.disabled = !ok;
   }
 }
-// listeners para validación en tiempo real
 emailInput?.addEventListener('input', updateLoginEnabled);
 passwordInput?.addEventListener('input', updateLoginEnabled);
-// evalúa estado inicial (deshabilita si no es válido)
 updateLoginEnabled();
 
-// NUEVO: toggle mostrar/ocultar contraseña (si existe el botón en el HTML)
+// Toggle mostrar/ocultar contraseña (si existe el botón en el HTML)
 if (togglePwd) {
   togglePwd.addEventListener('click', () => {
     const show = passwordInput.type === 'password';
@@ -73,13 +70,11 @@ if (loginBtn) {
     const email = (emailInput?.value || '').trim();
     const password = (passwordInput?.value || '').trim();
 
-    // limpia estado
     if (authStatus) authStatus.textContent = '';
     setLoading(true);
 
     try {
       await auth.signInWithEmailAndPassword(email, password);
-      // Feedback breve (opcional): se ocultará de inmediato al cambiar de vista
       showOk('Ingreso correcto…');
     } catch (e) {
       const map = {
@@ -92,7 +87,7 @@ if (loginBtn) {
       showError(map[e.code] || ('Error: ' + e.message));
     } finally {
       setLoading(false);
-      updateLoginEnabled(); // re-evalúa disabled según inputs
+      updateLoginEnabled();
     }
   });
 }
@@ -122,12 +117,69 @@ auth.onAuthStateChanged(async (user) => {
     idToken = null;
     if (authSection) authSection.style.display = 'block';
     if (appSection) appSection.style.display = 'none';
-    // Al volver al login, revalida botón
     updateLoginEnabled();
   }
 });
 
-// ---- Productos ----
+// =======================
+//   Productos (Commit 2)
+// =======================
+
+// Helpers de render
+function formatCurrency(n){
+  const x = Number(n);
+  if (Number.isNaN(x)) return '$0.00';
+  return x.toLocaleString('es-MX', { style:'currency', currency:'MXN' });
+}
+
+function renderProductsTable(products){
+  const tbody = document.getElementById('productsTableBody');
+  const empty = document.getElementById('emptyState');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  if (!products || products.length === 0){
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+
+  products.forEach(p => {
+    const tr = document.createElement('tr');
+    const tdName = document.createElement('td');
+    const tdPrice = document.createElement('td');
+    tdName.textContent = p.name;
+    tdPrice.textContent = formatCurrency(p.price);
+    tdPrice.className = 'right';
+    tr.appendChild(tdName);
+    tr.appendChild(tdPrice);
+    tbody.appendChild(tr);
+  });
+}
+
+function renderKpis(products){
+  const totalEl = document.getElementById('statsTotal');
+  const avgEl   = document.getElementById('statsAvg');
+  const maxEl   = document.getElementById('statsMax');
+  const maxName = document.getElementById('statsMaxName');
+
+  const total = products.length;
+  const sum = products.reduce((acc,p)=> acc + Number(p.price||0), 0);
+  const avg = total ? (sum/total) : 0;
+
+  let max = { price: 0, name: '—' };
+  products.forEach(p => {
+    const price = Number(p.price||0);
+    if (price > max.price) max = { price, name: p.name };
+  });
+
+  if (totalEl) totalEl.textContent = String(total);
+  if (avgEl)   avgEl.textContent   = formatCurrency(avg);
+  if (maxEl)   maxEl.textContent   = formatCurrency(max.price);
+  if (maxName) maxName.textContent = max.name || '—';
+}
+
+// Carga/Actualiza
 async function loadProducts() {
   if (!idToken) return;
   try {
@@ -146,20 +198,15 @@ async function loadProducts() {
     }
 
     const data = await res.json();
-    const list = document.getElementById('list');
-    if (!list) return;
-
-    list.innerHTML = '';
-    data.forEach(p => {
-      const li = document.createElement('li');
-      li.textContent = `${p.name} — $${Number(p.price).toFixed(2)}`;
-      list.appendChild(li);
-    });
+    // NUEVO: render de tabla y KPIs
+    renderProductsTable(data);
+    renderKpis(data);
   } catch (e) {
     showError(e.message);
   }
 }
 
+// Crear producto
 if (addForm) {
   addForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -194,9 +241,15 @@ if (addForm) {
         throw new Error(err.error || `Error al crear producto (${res.status})`);
       }
 
+      // Reset y feedback
       document.getElementById('name').value = '';
       document.getElementById('price').value = '';
+      showOk('Producto agregado correctamente.');
+      setTimeout(() => showOk(''), 1500);
+
+      // Recarga tabla y KPIs
       loadProducts();
+      
     } catch (e) {
       alert(e.message);
     }
