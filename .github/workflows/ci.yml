@@ -8,13 +8,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      SIM_DELAY_MS: 0      # evita que las pruebas tarden
-      SIM_ERROR_RATE: 0    # evita errores 503 aleatorios
+      # Asegura instalación de devDependencies (Jest/Supertest)
+      NODE_ENV: development
+      NPM_CONFIG_PRODUCTION: "false"
+      # Evita aleatoriedad/latencias del simulador en tests
+      SIM_DELAY_MS: 0
+      SIM_ERROR_RATE: 0
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-      - run: npm ci
+      - run: npm ci --no-audit --no-fund
+      - run: npx jest --version
       - run: npm test
