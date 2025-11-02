@@ -18,8 +18,13 @@
           autocomplete="email" required />
 
     <label for="password" class="label">Contraseña</label>
-    <input id="password" type="password" class="input" placeholder="Contraseña"
-          autocomplete="current-password" required />
+    <div class="input-group">
+      <input id="password" type="password" class="input" placeholder="Contraseña"
+            autocomplete="current-password" required />
+      <button type="button" id="togglePwd" class="btn-ghost"
+              aria-pressed="false" aria-label="Mostrar contraseña">👁</button>
+    </div>
+
 
     <button id="loginBtn" class="btn" aria-live="polite">Iniciar sesión</button>
     <p id="authStatus" class="status" role="status" aria-live="polite"></p>
