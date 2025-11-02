@@ -32,3 +32,11 @@ h1{margin:0 0 24px;font-size:28px}
 .btn:hover{background:var(--primary-600)}
 .status{min-height:20px; margin-top:10px; color:#b91c1c}
 #app{max-width:900px;margin-top:24px}
+
+.input-group{ display:flex; align-items:center; gap:8px }
+.input-group .input{ flex:1 }
+.btn-ghost{
+  padding:10px 12px; border:1px solid #e5e7eb; background:#fff;
+  border-radius:10px; cursor:pointer; line-height:1;
+}
+.btn-ghost:hover{ background:#f3f4f6 }

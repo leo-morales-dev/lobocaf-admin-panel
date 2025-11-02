@@ -10,6 +10,12 @@ const loginBtn = document.getElementById('loginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const addForm = document.getElementById('addForm');
 
+// NUEVO: refs para validación y toggle contraseña
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const togglePwd = document.getElementById('togglePwd');
+
+// ---- Utilidades de UI ----
 function setLoading(isLoading) {
   if (!loginBtn) return;
   loginBtn.disabled = isLoading;
@@ -20,18 +26,49 @@ function showError(message) {
   if (authStatus) authStatus.textContent = message || '';
 }
 
+// NUEVO: validación simple de email y habilitar botón
+function isValidEmail(s) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+}
+function updateLoginEnabled() {
+  if (!loginBtn) return;
+  const ok =
+    isValidEmail((emailInput?.value || '').trim()) &&
+    ((passwordInput?.value || '').trim()).length >= 6;
+  loginBtn.disabled = !ok;
+}
+// listeners para validación en tiempo real
+emailInput?.addEventListener('input', updateLoginEnabled);
+passwordInput?.addEventListener('input', updateLoginEnabled);
+// evalúa estado inicial
+updateLoginEnabled();
+
+// NUEVO: toggle mostrar/ocultar contraseña (si existe el botón en el HTML)
+if (togglePwd) {
+  togglePwd.addEventListener('click', () => {
+    const show = passwordInput.type === 'password';
+    passwordInput.type = show ? 'text' : 'password';
+    togglePwd.setAttribute('aria-pressed', String(show));
+    togglePwd.textContent = show ? '🙈' : '👁';
+    passwordInput.focus();
+  });
+}
+
+// ---- Auth: login / logout ----
 if (loginBtn) {
   loginBtn.addEventListener('click', async () => {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
+    const email = (emailInput?.value || '').trim();
+    const password = (passwordInput?.value || '').trim();
 
     showError('');
     setLoading(true);
 
     try {
       await auth.signInWithEmailAndPassword(email, password);
+
+      // (Opcional) feedback breve antes de cambiar vista
+      // if (authStatus) { authStatus.textContent = 'Ingreso correcto…'; }
     } catch (e) {
-      // Map de errores comunes de Firebase Auth
       const map = {
         'auth/invalid-email': 'El correo no es válido.',
         'auth/user-disabled': 'El usuario está deshabilitado.',
@@ -56,6 +93,7 @@ if (logoutBtn) {
   });
 }
 
+// ---- Estado de sesión ----
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     try {
@@ -73,6 +111,7 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
+// ---- Productos ----
 async function loadProducts() {
   if (!idToken) return;
   try {
@@ -139,7 +178,6 @@ if (addForm) {
         throw new Error(err.error || `Error al crear producto (${res.status})`);
       }
 
-      // Reset y recarga
       document.getElementById('name').value = '';
       document.getElementById('price').value = '';
       loadProducts();
