@@ -1,15 +1,25 @@
-
 name: CI
+
 on:
   push:
   pull_request:
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Asegura instalación de devDependencies (Jest/Supertest)
+      NODE_ENV: development
+      NPM_CONFIG_PRODUCTION: "false"
+      # Evita aleatoriedad/latencias del simulador en tests
+      SIM_DELAY_MS: 0
+      SIM_ERROR_RATE: 0
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      - run: npm ci
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci --no-audit --no-fund
+      - run: npx jest --version
       - run: npm test
