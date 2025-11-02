@@ -241,9 +241,14 @@ if (addForm) {
         throw new Error(err.error || `Error al crear producto (${res.status})`);
       }
 
+      // Reset y feedback
       document.getElementById('name').value = '';
       document.getElementById('price').value = '';
-      loadProducts(); // recarga tabla y KPIs
+      showOk('Producto agregado correctamente.');
+      setTimeout(() => showOk(''), 1500);
+
+      // Recarga tabla y KPIs
+      loadProducts();
     } catch (e) {
       alert(e.message);
     }

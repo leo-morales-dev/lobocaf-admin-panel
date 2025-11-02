@@ -98,3 +98,14 @@ h1{margin:0 0 24px;font-size:28px}
 
 /* Empty */
 .empty{padding:12px; color:#6b7280; background:#f8fafc; border:1px dashed #e5e7eb; border-radius:10px; margin-bottom:8px}
+
+/* Fondo suave tipo dashboard */
+body{
+  background: radial-gradient(1200px 600px at 50% -100px, #e9edff 0%, #f7f9ff 35%, #f8fafc 100%);
+}
+.table tbody tr td:first-child{border-left:1px solid #eef2f7}
+.table tbody tr td:last-child{border-right:1px solid #eef2f7}
+.table thead th:first-child{border-top-left-radius:10px}
+.table thead th:last-child{border-top-right-radius:10px}
+.table tbody tr:last-child td:first-child{border-bottom-left-radius:10px}
+.table tbody tr:last-child td:last-child{border-bottom-right-radius:10px}
