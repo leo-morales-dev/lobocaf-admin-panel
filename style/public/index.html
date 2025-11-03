@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="brand">
+    <span class="dot"></span>
+    <h1>LoboCaf – Panel Administrativo</h1>
+  </div>
+
+  <section id="auth" class="card" style="max-width:520px; margin-top:14px;">
+    <h2>Inicio de sesión</h2>
+    <p class="muted"><small>Solo Email/Password (usuarios creados desde la consola de Firebase).</small></p>
+
+    <div class="stack-m" style="margin-top:10px;">
+      <input id="email" class="input" type="email" placeholder="correo@ejemplo.com" />
+
+      <div style="position: relative;">
+        <input id="password" class="input" type="password" placeholder="Contraseña" style="padding-right:40px;">
+        <!-- Botón de mostrar/ocultar (lo usa app.js si existe) -->
+        <button type="button" id="togglePwd" class="btn-icon" aria-pressed="false" aria-label="Mostrar u ocultar contraseña"
+          style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:#0e1a32; border:1px solid #1f2937; padding:6px 8px;">
+          👁
+        </button>
+      </div>
+
+      <button id="loginBtn" disabled>Iniciar sesión</button>
+      <p id="authStatus" class="status"></p>
+    </div>
+  </section>
+
+  <!-- La sección de app queda igual; solo le añadimos clase card para verse mejor -->
+  <section id="app" class="card" style="display:none; margin-top:16px;">
+    <h2>Productos</h2>
+    <form id="addForm" class="row" style="margin-top:8px;">
+      <input id="name" class="input" placeholder="Nombre" required />
+      <div style="display:flex; gap:10px;">
+        <input id="price" class="input" type="number" step="0.01" placeholder="Precio" required style="max-width:180px;">
+        <button>Agregar</button>
+      </div>
+    </form>
+    <ul id="list" class="product-list" style="margin-top:12px;"></ul>
+    <div style="margin-top:14px;">
+      <button id="logoutBtn" style="background:linear-gradient(180deg,#374151,#111827); box-shadow:none;">Cerrar sesión</button>
+    </div>
+  </section>
+</div>
