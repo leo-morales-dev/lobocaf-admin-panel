@@ -5,6 +5,7 @@ let idToken = null;
 // UI elements
 const authSection = document.getElementById('auth');
 const appSection = document.getElementById('app');
+const bodyEl = document.body;
 const authStatus = document.getElementById('authStatus');
 const loginBtn = document.getElementById('loginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
@@ -112,11 +113,13 @@ auth.onAuthStateChanged(async (user) => {
     }
     if (authSection) authSection.style.display = 'none';
     if (appSection) appSection.style.display = 'block';
+    bodyEl?.classList.add('app-active');
     loadProducts();
   } else {
     idToken = null;
     if (authSection) authSection.style.display = 'block';
     if (appSection) appSection.style.display = 'none';
+    bodyEl?.classList.remove('app-active');
     updateLoginEnabled();
   }
 });
