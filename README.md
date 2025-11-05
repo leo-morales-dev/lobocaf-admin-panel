@@ -41,6 +41,20 @@ npm test
 ## CI (GitHub Actions)
 Archivo en `.github/workflows/ci.yml` ejecuta install + test en cada push/pull_request.
 
+## Cómo modificar las reglas de protección en GitHub
+Si ves mensajes como “Review required” o “Merging is blocked”, significa que la rama tiene
+reglas de protección activas. Para ajustarlas necesitas permisos de administrador en el
+repositorio:
+
+1. Ingresa a GitHub y abre el repositorio.
+2. Ve a **Settings → Branches → Branch protection rules**.
+3. Selecciona la regla (por ejemplo, la de `main`) y haz clic en **Edit**.
+4. Ajusta las opciones necesarias (requerir aprobaciones, checks, etc.).
+5. Guarda con **Save changes**. Si quieres eliminarla por completo, usa **Delete this rule**.
+
+Los colaboradores sin permisos de administrador no pueden modificar estas reglas; deberán
+pedir a alguien con acceso que lo haga.
+
 ## Estructura
 ```text
 src/
