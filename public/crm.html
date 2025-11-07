@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LoboCaf · CRM</title>
+  <link rel="stylesheet" href="/crm.css" />
+</head>
+<body>
+  <div class="crm-shell">
+    <aside class="crm-sidebar">
+      <div class="sidebar-brand">
+        <span class="crm-logo" aria-hidden="true">☕</span>
+        <div>
+          <h1>LoboCaf</h1>
+          <p>Control de clientes</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav" aria-label="Navegación principal">
+        <span class="nav-label">Panel</span>
+        <a class="nav-link active" href="#dashboard">Resumen</a>
+        <span class="nav-label">Gestión</span>
+        <a class="nav-link" href="#products">Productos</a>
+        <a class="nav-link" href="#reports">Reportes</a>
+        <a class="nav-link" href="#integrations">Integraciones</a>
+        <span class="nav-label">Automatización</span>
+        <a class="nav-link" href="#workflows">Workflows</a>
+        <a class="nav-link" href="#settings">Configuración</a>
+      </nav>
+      <section class="sidebar-upgrade" aria-label="Recomendación">
+        <h2>Potencia el CRM</h2>
+        <p>Analiza tendencias y automatiza seguimientos con el plan Pro.</p>
+        <button type="button">Ver planes</button>
+      </section>
+    </aside>
+
+    <div class="crm-content">
+      <header class="crm-topbar">
+        <div class="topbar-intro">
+          <h2>Panel principal</h2>
+          <p>Control básico de productos y rendimiento de ventas.</p>
+        </div>
+        <div class="topbar-actions">
+          <div class="user-chip" aria-label="Administrador">
+            <span class="user-avatar" aria-hidden="true">LC</span>
+            <div>
+              <strong>Administrador</strong>
+              <small>lobocaf.mx</small>
+            </div>
+          </div>
+          <button id="logoutBtn" class="crm-logout">Cerrar sesión</button>
+        </div>
+      </header>
+
+      <main class="crm-main">
+        <section id="dashboard" class="crm-panel kpi-panel" aria-labelledby="resumen-title">
+          <div class="panel-head">
+            <div>
+              <h2 id="resumen-title">Resumen</h2>
+              <p class="panel-subtitle">Monitorea el desempeño general de los productos</p>
+            </div>
+            <button type="button" class="ghost-button">Generar reporte</button>
+          </div>
+          <div class="crm-stats">
+            <article class="stat">
+              <h3>Total de productos</h3>
+              <p id="statsTotal">0</p>
+              <small>Productos activos en el catálogo</small>
+            </article>
+            <article class="stat">
+              <h3>Ticket promedio</h3>
+              <p id="statsAvg">$0.00</p>
+              <small>Promedio mensual de tickets</small>
+            </article>
+            <article class="stat">
+              <h3>Producto destacado</h3>
+              <p id="statsMax">$0.00</p>
+              <small id="statsMaxName">—</small>
+            </article>
+            <article class="stat">
+              <h3>Premium</h3>
+              <p id="statsPremium">0</p>
+              <small>Productos con precio premium</small>
+            </article>
+          </div>
+        </section>
+
+        <div class="crm-columns">
+          <section class="crm-panel" aria-labelledby="agregar-title">
+            <h2 id="agregar-title">Agregar producto</h2>
+            <p class="panel-subtitle">Registra nuevos productos para mantener actualizado el inventario.</p>
+            <form id="addForm" class="add-form">
+              <label>
+                <span>Nombre</span>
+                <input id="name" type="text" placeholder="Capuchino" required />
+              </label>
+              <label>
+                <span>Precio (MXN)</span>
+                <input id="price" type="number" step="0.01" min="0" placeholder="35.00" required />
+              </label>
+              <button type="submit">Guardar</button>
+            </form>
+          </section>
+
+          <section class="crm-panel secondary" aria-labelledby="actividad-title">
+            <h2 id="actividad-title">Actividad reciente</h2>
+            <p class="panel-subtitle">Seguimiento de tareas y recordatorios para tu equipo.</p>
+            <ul class="activity-feed">
+              <li>
+                <div>
+                  <strong>Enviar campaña de lanzamiento</strong>
+                  <p>Marketing · 12 mar, 10:30 h</p>
+                </div>
+                <span class="status-chip success">En curso</span>
+              </li>
+              <li>
+                <div>
+                  <strong>Revisar precios premium</strong>
+                  <p>Ventas · 11 mar, 16:15 h</p>
+                </div>
+                <span class="status-chip warning">Pendiente</span>
+              </li>
+              <li>
+                <div>
+                  <strong>Actualizar inventario</strong>
+                  <p>Operaciones · 10 mar, 09:00 h</p>
+                </div>
+                <span class="status-chip neutral">Completado</span>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <section id="products" class="crm-panel" aria-labelledby="productos-title">
+          <div class="panel-head">
+            <div>
+              <h2 id="productos-title">Productos</h2>
+              <p class="panel-subtitle">Gestiona el catálogo y filtra por segmento.</p>
+            </div>
+            <div class="panel-tools">
+              <label class="search">
+                <span class="sr-only">Buscar producto</span>
+                <input id="searchProducts" type="search" placeholder="Buscar por nombre" />
+              </label>
+              <label>
+                <span class="sr-only">Filtrar por segmento</span>
+                <select id="segmentFilter">
+                  <option value="all">Todos los segmentos</option>
+                  <option value="premium">Premium</option>
+                  <option value="media">Ticket medio</option>
+                  <option value="basico">Básico</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div id="statusBanner" class="status-banner" role="status" aria-live="polite"></div>
+          <div id="emptyState" class="empty-state">No hay productos aún.</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Segmento</th>
+                  <th class="number">Precio</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="reports" class="crm-panel secondary" aria-labelledby="reportes-title">
+          <h2 id="reportes-title">Reportes recomendados</h2>
+          <ul class="reports-list">
+            <li>
+              <div>
+                <strong>Ventas por segmento</strong>
+                <p>Analiza el desempeño de los productos básicos, medios y premium.</p>
+              </div>
+              <button type="button" class="ghost-button">Ver detalles</button>
+            </li>
+            <li>
+              <div>
+                <strong>Productos destacados</strong>
+                <p>Identifica oportunidades de upselling basadas en el ticket promedio.</p>
+              </div>
+              <button type="button" class="ghost-button">Generar</button>
+            </li>
+          </ul>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="/firebase-init.js"></script>
+  <script src="/crm.js"></script>
+</body>
+</html>
