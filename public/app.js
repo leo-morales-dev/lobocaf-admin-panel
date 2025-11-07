@@ -1,8 +1,8 @@
-// Firebase (compat)
+// /public/app.js
+// Lógica de auth + UI (sin dependencias a laila-ui)
 const auth = firebase.auth();
 let idToken = null;
 
-// UI elements
 const authSection = document.getElementById('auth');
 const appSection = document.getElementById('app');
 const bodyEl = document.body;
@@ -14,56 +14,31 @@ const searchInput = document.getElementById('searchProducts');
 const filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
 
 const loginBtnDefaultText = (loginBtn?.textContent || '').trim() || 'Sign in';
-if (loginBtn) {
-  loginBtn.dataset.loading = 'false';
-}
+if (loginBtn) loginBtn.dataset.loading = 'false';
 
-// NUEVO: refs para validación y toggle contraseña
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const togglePwd = document.getElementById('togglePwd');
 
-// ---- Utilidades de UI ----
-function setLoading(isLoading) {
+function setLoading(isLoading){
   if (!loginBtn) return;
   loginBtn.disabled = isLoading;
   loginBtn.dataset.loading = isLoading ? 'true' : 'false';
   loginBtn.textContent = isLoading ? 'Conectando…' : loginBtnDefaultText;
 }
-
-function showError(message) {
-  if (!authStatus) return;
-  authStatus.classList.remove('status--ok');
-  authStatus.classList.add('status--error');
-  authStatus.textContent = message || '';
-}
-
-function showOk(message) {
-  if (!authStatus) return;
-  authStatus.classList.remove('status--error');
-  authStatus.classList.add('status--ok');
-  authStatus.textContent = message || '';
-}
-
-// Validación simple de email y habilitar botón
-function isValidEmail(s) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
-}
-function updateLoginEnabled() {
+function showError(message){ if (!authStatus) return; authStatus.classList.remove('status--ok'); authStatus.classList.add('status--error'); authStatus.textContent = message || ''; }
+function showOk(message){ if (!authStatus) return; authStatus.classList.remove('status--error'); authStatus.classList.add('status--ok'); authStatus.textContent = message || ''; }
+function isValidEmail(s){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s); }
+function updateLoginEnabled(){
   if (!loginBtn) return;
-  const ok =
-    isValidEmail((emailInput?.value || '').trim()) &&
-    ((passwordInput?.value || '').trim()).length >= 6;
+  const ok = isValidEmail((emailInput?.value || '').trim()) && ((passwordInput?.value || '').trim()).length >= 6;
   const isBusy = loginBtn.dataset.loading === 'true';
-  if (!isBusy) {
-    loginBtn.disabled = !ok;
-  }
+  if (!isBusy) loginBtn.disabled = !ok;
 }
 emailInput?.addEventListener('input', updateLoginEnabled);
 passwordInput?.addEventListener('input', updateLoginEnabled);
 updateLoginEnabled();
 
-// Toggle mostrar/ocultar contraseña (si existe el botón en el HTML)
 if (togglePwd) {
   togglePwd.addEventListener('click', () => {
     const show = passwordInput.type === 'password';
@@ -74,15 +49,12 @@ if (togglePwd) {
   });
 }
 
-// ---- Auth: login / logout ----
 if (loginBtn) {
   loginBtn.addEventListener('click', async () => {
     const email = (emailInput?.value || '').trim();
     const password = (passwordInput?.value || '').trim();
-
     if (authStatus) authStatus.textContent = '';
     setLoading(true);
-
     try {
       await auth.signInWithEmailAndPassword(email, password);
       showOk('Signed in successfully.');
@@ -104,22 +76,13 @@ if (loginBtn) {
 
 if (logoutBtn) {
   logoutBtn.addEventListener('click', async () => {
-    try {
-      await auth.signOut();
-    } catch (e) {
-      alert('No se pudo cerrar sesión: ' + e.message);
-    }
+    try { await auth.signOut(); } catch (e) { alert('No se pudo cerrar sesión: ' + e.message); }
   });
 }
 
-// ---- Estado de sesión ----
 auth.onAuthStateChanged(async (user) => {
   if (user) {
-    try {
-      idToken = await user.getIdToken();
-    } catch (_) {
-      idToken = null;
-    }
+    try { idToken = await user.getIdToken(); } catch (_) { idToken = null; }
     if (authSection) authSection.style.display = 'none';
     if (appSection) appSection.style.display = 'block';
     bodyEl?.classList.add('app-active');
@@ -133,73 +96,43 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
-// =======================
-//   Productos (Commit 2)
-// =======================
-
+/* ===================== Productos ===================== */
 let productsData = [];
 let currentFilter = 'all';
 let currentSearch = '';
-
-// Helpers de render
-function formatCurrency(n){
-  const x = Number(n);
-  if (Number.isNaN(x)) return '$0.00';
-  return x.toLocaleString('es-MX', { style:'currency', currency:'MXN' });
-}
-
-function getSegment(price){
-  const value = Number(price) || 0;
-  if (value >= 60) return { label: 'Premium', slug: 'premium' };
-  if (value >= 35) return { label: 'Ticket medio', slug: 'media' };
-  return { label: 'Básico', slug: 'basico' };
-}
+function formatCurrency(n){ const x = Number(n); if (Number.isNaN(x)) return '$0.00'; return x.toLocaleString('es-MX', { style:'currency', currency:'MXN' }); }
+function getSegment(price){ const v = Number(price)||0; if (v>=60) return {label:'Premium', slug:'premium'}; if (v>=35) return {label:'Ticket medio', slug:'media'}; return {label:'Básico', slug:'basico'}; }
 
 function renderProductsTable(products){
   const tbody = document.getElementById('productsTableBody');
   const empty = document.getElementById('emptyState');
   if (!tbody) return;
   tbody.innerHTML = '';
-
   const hasProducts = Array.isArray(productsData) && productsData.length > 0;
-
   if (!products || products.length === 0){
-    if (empty) {
+    if (empty){
       empty.style.display = 'block';
-      empty.textContent = hasProducts
-        ? 'No hay productos que coincidan con la búsqueda o filtro aplicado.'
-        : 'Aún no hay productos. Agrega el primero.';
+      empty.textContent = hasProducts ? 'No hay productos que coincidan con la búsqueda o filtro aplicado.' : 'Aún no hay productos. Agrega el primero.';
     }
     return;
   }
   if (empty) empty.style.display = 'none';
-
   products.forEach(p => {
     const tr = document.createElement('tr');
     const tdName = document.createElement('td');
     const tdSegment = document.createElement('td');
     const tdPrice = document.createElement('td');
     const tdActions = document.createElement('td');
-
     const segment = getSegment(p.price);
-
     tdName.textContent = p.name || '—';
     tdSegment.innerHTML = `<span class="segment-badge segment-badge--${segment.slug}">${segment.label}</span>`;
     tdPrice.textContent = formatCurrency(p.price);
     tdPrice.className = 'right';
-
     const actionBtn = document.createElement('button');
-    actionBtn.type = 'button';
-    actionBtn.className = 'table-action';
-    actionBtn.textContent = 'Ver ficha';
+    actionBtn.type = 'button'; actionBtn.className = 'table-action'; actionBtn.textContent = 'Ver ficha';
     actionBtn.setAttribute('aria-label', `Abrir ficha de ${p.name || 'producto'}`);
-    tdActions.className = 'right';
-    tdActions.appendChild(actionBtn);
-
-    tr.appendChild(tdName);
-    tr.appendChild(tdSegment);
-    tr.appendChild(tdPrice);
-    tr.appendChild(tdActions);
+    tdActions.className = 'right'; tdActions.appendChild(actionBtn);
+    tr.append(tdName, tdSegment, tdPrice, tdActions);
     tbody.appendChild(tr);
   });
 }
@@ -210,19 +143,12 @@ function renderKpis(products){
   const maxEl   = document.getElementById('statsMax');
   const maxName = document.getElementById('statsMaxName');
   const premiumEl = document.getElementById('statsPremium');
-
   const total = products.length;
   const sum = products.reduce((acc,p)=> acc + Number(p.price||0), 0);
   const avg = total ? (sum/total) : 0;
-
   let max = { price: 0, name: '—' };
   let premiumCount = 0;
-  products.forEach(p => {
-    const price = Number(p.price||0);
-    if (price > max.price) max = { price, name: p.name };
-    if (price >= 60) premiumCount += 1;
-  });
-
+  products.forEach(p => { const price = Number(p.price||0); if (price > max.price) max = { price, name: p.name }; if (price >= 60) premiumCount += 1; });
   if (totalEl) totalEl.textContent = String(total);
   if (avgEl)   avgEl.textContent   = formatCurrency(avg);
   if (maxEl)   maxEl.textContent   = formatCurrency(max.price);
@@ -232,102 +158,60 @@ function renderKpis(products){
 
 function applyProductView(){
   let filtered = productsData.slice();
-
   if (currentSearch){
     const needle = currentSearch.toLowerCase();
     filtered = filtered.filter(p => (p.name || '').toLowerCase().includes(needle));
   }
-
   if (currentFilter !== 'all'){
     filtered = filtered.filter(p => getSegment(p.price).slug === currentFilter);
   }
-
   renderProductsTable(filtered);
 }
 
-// Carga/Actualiza
-async function loadProducts() {
+async function loadProducts(){
   if (!idToken) return;
   try {
-    const res = await fetch('/api/products', {
-      headers: { 'Authorization': 'Bearer ' + idToken }
-    });
-
+    const res = await fetch('/api/products', { headers: { 'Authorization': 'Bearer ' + idToken }});
     if (!res.ok) {
-      if (res.status === 401) {
-        showError('Tu sesión expiró. Vuelve a iniciar sesión.');
-        await auth.signOut();
-        return;
-      }
+      if (res.status === 401) { showError('Tu sesión expiró. Vuelve a iniciar sesión.'); await auth.signOut(); return; }
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || `Error al cargar productos (${res.status})`);
     }
-
     const data = await res.json();
     productsData = Array.isArray(data) ? data : [];
     renderKpis(productsData);
     applyProductView();
-  } catch (e) {
-    showError(e.message);
-  }
+  } catch (e) { showError(e.message); }
 }
 
-// Crear producto
 if (addForm) {
   addForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!idToken) return;
-
     const name = document.getElementById('name').value.trim();
     const priceValue = document.getElementById('price').value;
     const price = Number.parseFloat(priceValue);
-
-    if (!name || Number.isNaN(price)) {
-      alert('Completa nombre y precio válidos.');
-      return;
-    }
-
+    if (!name || Number.isNaN(price)) { alert('Completa nombre y precio válidos.'); return; }
     try {
       const res = await fetch('/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + idToken
-        },
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + idToken },
         body: JSON.stringify({ name, price })
       });
-
       if (!res.ok) {
-        if (res.status === 401) {
-          showError('Tu sesión expiró. Vuelve a iniciar sesión.');
-          await auth.signOut();
-          return;
-        }
+        if (res.status === 401) { showError('Tu sesión expiró. Vuelve a iniciar sesión.'); await auth.signOut(); return; }
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `Error al crear producto (${res.status})`);
       }
-
-      // Reset y feedback
       document.getElementById('name').value = '';
       document.getElementById('price').value = '';
-      showOk('Producto agregado correctamente.');
-      setTimeout(() => showOk(''), 1500);
-
-      // Recarga tabla y KPIs
+      showOk('Producto agregado correctamente.'); setTimeout(() => showOk(''), 1500);
       loadProducts();
-
-    } catch (e) {
-      alert(e.message);
-    }
+    } catch (e) { alert(e.message); }
   });
 }
 
-// Búsqueda y filtros visuales
-searchInput?.addEventListener('input', (e) => {
-  currentSearch = (e.target.value || '').trim();
-  applyProductView();
-});
-
+searchInput?.addEventListener('input', (e) => { currentSearch = (e.target.value || '').trim(); applyProductView(); });
 filterBtns.forEach((btn) => {
   btn.addEventListener('click', () => {
     currentFilter = btn.dataset.filter || 'all';

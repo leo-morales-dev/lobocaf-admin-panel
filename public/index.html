@@ -1,8 +1,10 @@
+<!-- /public/index.html -->
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Mantener solo este CSS; sin laila-ui -->
   <link rel="stylesheet" href="/styles.css" />
   <title>LoboCaf – Admin Panel</title>
 </head>
@@ -41,33 +43,16 @@
 
         <div class="field-pill">
           <label class="sr-only" for="email">E-mail</label>
-          <input id="email"
-                 type="email"
-                 class="input"
-                 placeholder="correo@lobocaf.com"
-                 autocomplete="email"
-                 required />
+          <input id="email" type="email" class="input" placeholder="correo@lobocaf.com" autocomplete="email" required />
         </div>
 
         <div class="field-pill field-pill--password">
           <label class="sr-only" for="password">Password</label>
-          <input id="password"
-                 type="password"
-                 class="input"
-                 placeholder="••••••••"
-                 autocomplete="current-password"
-                 required />
-          <button type="button"
-                  id="togglePwd"
-                  class="pwd-toggle"
-                  aria-pressed="false"
-                  aria-label="Mostrar contraseña">👁</button>
+          <input id="password" type="password" class="input" placeholder="••••••••" autocomplete="current-password" required />
+          <button type="button" id="togglePwd" class="pwd-toggle" aria-pressed="false" aria-label="Mostrar contraseña">👁</button>
         </div>
 
-        <button id="loginBtn" class="btn-primary" aria-live="polite">
-          Iniciar sesión
-        </button>
-
+        <button id="loginBtn" class="btn-primary" aria-live="polite">Iniciar sesión</button>
         <p id="authStatus" class="status" role="status" aria-live="polite"></p>
       </div>
     </section>
@@ -85,7 +70,6 @@
               <span class="brand-tag">CRM Operativo</span>
             </div>
           </div>
-
           <nav class="sidebar-nav">
             <p class="nav-label">Panel</p>
             <a href="#" class="nav-link nav-link--active">Productos</a>
@@ -94,7 +78,6 @@
             <a href="#" class="nav-link">Equipos</a>
           </nav>
         </div>
-
         <div class="sidebar-foot">
           <div class="sidebar-user">
             <div class="avatar">LC</div>
