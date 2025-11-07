@@ -9,13 +9,34 @@
 <body>
   <!-- Vista de autenticación -->
   <main class="auth-shell">
-    <section id="auth" class="login-slab">
-      <!-- Columna izquierda: formulario -->
-      <div class="login-left">
-        <div class="login-header">
-          <p class="hello">Hello!</p>
-          <h1 class="login-title">Sign into your account</h1>
-          <p class="login-subtitle">Use your LoboCaf admin credentials.</p>
+    <section id="auth" class="auth-card">
+      <aside class="auth-info">
+        <div class="auth-info__content">
+          <span class="auth-badge">CRM LoboCaf</span>
+          <h1 class="auth-headline">Administra tu catálogo como un CRM</h1>
+          <p class="auth-copy">
+            Gestiona precios, inventario y desempeño desde un panel diseñado para equipos.
+          </p>
+          <ul class="auth-list">
+            <li>Sincronización segura con Firebase.</li>
+            <li>Monitoreo de métricas clave en tiempo real.</li>
+            <li>Experiencia pensada para la operación diaria.</li>
+          </ul>
+        </div>
+      </aside>
+
+      <div class="auth-form">
+        <div class="auth-brand">
+          <div class="brand-icon">☕</div>
+          <div class="brand-text">
+            <span class="brand-name">LoboCaf</span>
+            <span class="brand-tag">Administrador</span>
+          </div>
+        </div>
+
+        <div class="auth-form__header">
+          <h2>Inicia sesión</h2>
+          <p>Accede con tus credenciales corporativas.</p>
         </div>
 
         <div class="field-pill">
@@ -23,7 +44,7 @@
           <input id="email"
                  type="email"
                  class="input"
-                 placeholder="E-mail"
+                 placeholder="correo@lobocaf.com"
                  autocomplete="email"
                  required />
         </div>
@@ -33,92 +54,177 @@
           <input id="password"
                  type="password"
                  class="input"
-                 placeholder="Password"
+                 placeholder="••••••••"
                  autocomplete="current-password"
                  required />
           <button type="button"
                   id="togglePwd"
                   class="pwd-toggle"
                   aria-pressed="false"
-                  aria-label="Show password">👁</button>
+                  aria-label="Mostrar contraseña">👁</button>
         </div>
 
         <button id="loginBtn" class="btn-primary" aria-live="polite">
-          Sign in
+          Iniciar sesión
         </button>
 
         <p id="authStatus" class="status" role="status" aria-live="polite"></p>
       </div>
-
-      <!-- Columna derecha: panel de bienvenida -->
-      <aside class="login-right">
-        <div class="welcome-box">
-          <h2 class="welcome-title">Welcome Back!</h2>
-          <p class="welcome-text">
-            Administra los productos de LoboCaf de forma segura desde este panel.
-          </p>
-        </div>
-      </aside>
     </section>
   </main>
 
   <!-- App (se muestra solo si hay sesión) -->
-  <section id="app" style="display:none">
-    <div class="dash">
-      <!-- Métricas -->
-      <div class="cards">
-        <div class="card kpi kpi-1">
-          <div class="kpi-title">Total de productos</div>
-          <div class="kpi-value" id="statsTotal">0</div>
-          <div class="kpi-foot">Actualizado ahora</div>
-        </div>
-        <div class="card kpi kpi-2">
-          <div class="kpi-title">Precio promedio</div>
-          <div class="kpi-value" id="statsAvg">$0.00</div>
-          <div class="kpi-foot">Promedio simple</div>
-        </div>
-        <div class="card kpi kpi-3">
-          <div class="kpi-title">Producto más caro</div>
-          <div class="kpi-value" id="statsMax">$0.00</div>
-          <div class="kpi-foot" id="statsMaxName">—</div>
-        </div>
-      </div>
+  <section id="app" class="crm-shell" style="display:none">
+    <div class="crm-layout">
+      <aside class="crm-sidebar">
+        <div>
+          <div class="sidebar-brand">
+            <span class="brand-icon brand-icon--sidebar">☕</span>
+            <div>
+              <span class="brand-name">LoboCaf</span>
+              <span class="brand-tag">CRM Operativo</span>
+            </div>
+          </div>
 
-      <!-- Form -->
-      <div class="card form-card">
-        <h2 class="section-title">Agregar producto</h2>
-        <form id="addForm" class="form-grid">
-          <div class="field">
-            <label for="name">Nombre</label>
-            <input id="name" class="input" placeholder="Capuchino" required />
-          </div>
-          <div class="field">
-            <label for="price">Precio</label>
-            <input id="price" class="input" type="number" step="0.01" placeholder="35.00" required />
-          </div>
-          <div class="actions">
-            <button class="btn primary">Agregar</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Tabla -->
-      <div class="card table-card">
-        <h2 class="section-title">Productos</h2>
-        <div id="emptyState" class="empty">Aún no hay productos. Agrega el primero.</div>
-        <div class="table-scroll">
-          <table class="table" id="productsTable">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th class="right">Precio</th>
-              </tr>
-            </thead>
-            <tbody id="productsTableBody"></tbody>
-          </table>
+          <nav class="sidebar-nav">
+            <p class="nav-label">Panel</p>
+            <a href="#" class="nav-link nav-link--active">Productos</a>
+            <a href="#" class="nav-link">Reportes</a>
+            <a href="#" class="nav-link">Clientes</a>
+            <a href="#" class="nav-link">Equipos</a>
+          </nav>
         </div>
-        <div class="card-foot">
-          <button id="logoutBtn" class="btn ghost">Cerrar sesión</button>
+
+        <div class="sidebar-foot">
+          <div class="sidebar-user">
+            <div class="avatar">LC</div>
+            <div>
+              <span class="user-name">Administrador</span>
+              <span class="user-role">Operaciones</span>
+            </div>
+          </div>
+          <button id="logoutBtn" class="btn btn-logout">Cerrar sesión</button>
+        </div>
+      </aside>
+
+      <div class="crm-main">
+        <header class="crm-header">
+          <div>
+            <h1 class="crm-title">Catálogo de productos</h1>
+            <p class="crm-subtitle">Controla precios y disponibilidad desde una vista CRM.</p>
+          </div>
+          <div class="header-actions">
+            <div class="session-indicator">
+              <span class="session-dot"></span>
+              Sesión activa
+            </div>
+          </div>
+        </header>
+
+        <div class="crm-toolbar">
+          <div class="toolbar-search">
+            <label class="sr-only" for="searchProducts">Buscar productos</label>
+            <span class="toolbar-icon">🔍</span>
+            <input id="searchProducts" class="toolbar-input" placeholder="Buscar por nombre" />
+          </div>
+          <div class="toolbar-filters" role="group" aria-label="Filtrar productos">
+            <button class="filter-btn filter-btn--active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="premium">Premium</button>
+            <button class="filter-btn" data-filter="media">Ticket medio</button>
+            <button class="filter-btn" data-filter="basico">Básicos</button>
+          </div>
+        </div>
+
+        <div class="crm-content">
+          <section class="crm-metrics">
+            <article class="metric-card metric-card--total">
+              <div class="metric-icon">📦</div>
+              <div>
+                <h2 class="metric-title">Total de productos</h2>
+                <p class="metric-value" id="statsTotal">0</p>
+                <p class="metric-foot">Actualizado ahora</p>
+              </div>
+            </article>
+
+            <article class="metric-card metric-card--avg">
+              <div class="metric-icon">💰</div>
+              <div>
+                <h2 class="metric-title">Ticket promedio</h2>
+                <p class="metric-value" id="statsAvg">$0.00</p>
+                <p class="metric-foot">Promedio simple</p>
+              </div>
+            </article>
+
+            <article class="metric-card metric-card--max">
+              <div class="metric-icon">⭐</div>
+              <div>
+                <h2 class="metric-title">Producto destacado</h2>
+                <p class="metric-value" id="statsMax">$0.00</p>
+                <p class="metric-foot" id="statsMaxName">—</p>
+              </div>
+            </article>
+
+            <article class="metric-card metric-card--premium">
+              <div class="metric-icon">🎯</div>
+              <div>
+                <h2 class="metric-title">Premium</h2>
+                <p class="metric-value" id="statsPremium">0</p>
+                <p class="metric-foot">Precio ≥ $60 MXN</p>
+              </div>
+            </article>
+          </section>
+
+          <div class="crm-grid">
+            <section class="crm-panel">
+              <div class="panel-header">
+                <div>
+                  <h2>Agregar producto</h2>
+                  <p>Registra un nuevo elemento en el catálogo.</p>
+                </div>
+                <div class="panel-badge">Nuevo</div>
+              </div>
+              <form id="addForm" class="panel-form">
+                <div class="form-field">
+                  <label for="name">Nombre</label>
+                  <input id="name" class="input" placeholder="Capuchino" required />
+                </div>
+                <div class="form-field">
+                  <label for="price">Precio</label>
+                  <div class="input-composite">
+                    <span class="input-prefix">$</span>
+                    <input id="price" class="input" type="number" step="0.01" placeholder="35.00" required />
+                  </div>
+                  <p class="field-hint">Defínelo en MXN. Se clasificará automáticamente.</p>
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn-primary">Agregar a CRM</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="crm-panel crm-panel--table">
+              <div class="panel-header">
+                <div>
+                  <h2>Productos</h2>
+                  <p>Visualiza el listado actualizado.</p>
+                </div>
+              </div>
+              <div id="emptyState" class="empty-state">Aún no hay productos. Agrega el primero.</div>
+              <div class="table-wrapper">
+                <table class="crm-table" id="productsTable">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Segmento</th>
+                      <th class="right">Precio</th>
+                      <th class="right">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="productsTableBody"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
     </div>

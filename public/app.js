@@ -10,6 +10,13 @@ const authStatus = document.getElementById('authStatus');
 const loginBtn = document.getElementById('loginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const addForm = document.getElementById('addForm');
+const searchInput = document.getElementById('searchProducts');
+const filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
+
+const loginBtnDefaultText = (loginBtn?.textContent || '').trim() || 'Sign in';
+if (loginBtn) {
+  loginBtn.dataset.loading = 'false';
+}
 
 // NUEVO: refs para validación y toggle contraseña
 const emailInput = document.getElementById('email');
@@ -20,7 +27,8 @@ const togglePwd = document.getElementById('togglePwd');
 function setLoading(isLoading) {
   if (!loginBtn) return;
   loginBtn.disabled = isLoading;
-  loginBtn.textContent = isLoading ? 'Signing in…' : 'Sign in';
+  loginBtn.dataset.loading = isLoading ? 'true' : 'false';
+  loginBtn.textContent = isLoading ? 'Conectando…' : loginBtnDefaultText;
 }
 
 function showError(message) {
@@ -46,7 +54,8 @@ function updateLoginEnabled() {
   const ok =
     isValidEmail((emailInput?.value || '').trim()) &&
     ((passwordInput?.value || '').trim()).length >= 6;
-  if (loginBtn.textContent !== 'Signing in…') {
+  const isBusy = loginBtn.dataset.loading === 'true';
+  if (!isBusy) {
     loginBtn.disabled = !ok;
   }
 }
@@ -128,11 +137,22 @@ auth.onAuthStateChanged(async (user) => {
 //   Productos (Commit 2)
 // =======================
 
+let productsData = [];
+let currentFilter = 'all';
+let currentSearch = '';
+
 // Helpers de render
 function formatCurrency(n){
   const x = Number(n);
   if (Number.isNaN(x)) return '$0.00';
   return x.toLocaleString('es-MX', { style:'currency', currency:'MXN' });
+}
+
+function getSegment(price){
+  const value = Number(price) || 0;
+  if (value >= 60) return { label: 'Premium', slug: 'premium' };
+  if (value >= 35) return { label: 'Ticket medio', slug: 'media' };
+  return { label: 'Básico', slug: 'basico' };
 }
 
 function renderProductsTable(products){
@@ -141,8 +161,15 @@ function renderProductsTable(products){
   if (!tbody) return;
   tbody.innerHTML = '';
 
+  const hasProducts = Array.isArray(productsData) && productsData.length > 0;
+
   if (!products || products.length === 0){
-    if (empty) empty.style.display = 'block';
+    if (empty) {
+      empty.style.display = 'block';
+      empty.textContent = hasProducts
+        ? 'No hay productos que coincidan con la búsqueda o filtro aplicado.'
+        : 'Aún no hay productos. Agrega el primero.';
+    }
     return;
   }
   if (empty) empty.style.display = 'none';
@@ -150,12 +177,29 @@ function renderProductsTable(products){
   products.forEach(p => {
     const tr = document.createElement('tr');
     const tdName = document.createElement('td');
+    const tdSegment = document.createElement('td');
     const tdPrice = document.createElement('td');
-    tdName.textContent = p.name;
+    const tdActions = document.createElement('td');
+
+    const segment = getSegment(p.price);
+
+    tdName.textContent = p.name || '—';
+    tdSegment.innerHTML = `<span class="segment-badge segment-badge--${segment.slug}">${segment.label}</span>`;
     tdPrice.textContent = formatCurrency(p.price);
     tdPrice.className = 'right';
+
+    const actionBtn = document.createElement('button');
+    actionBtn.type = 'button';
+    actionBtn.className = 'table-action';
+    actionBtn.textContent = 'Ver ficha';
+    actionBtn.setAttribute('aria-label', `Abrir ficha de ${p.name || 'producto'}`);
+    tdActions.className = 'right';
+    tdActions.appendChild(actionBtn);
+
     tr.appendChild(tdName);
+    tr.appendChild(tdSegment);
     tr.appendChild(tdPrice);
+    tr.appendChild(tdActions);
     tbody.appendChild(tr);
   });
 }
@@ -165,21 +209,40 @@ function renderKpis(products){
   const avgEl   = document.getElementById('statsAvg');
   const maxEl   = document.getElementById('statsMax');
   const maxName = document.getElementById('statsMaxName');
+  const premiumEl = document.getElementById('statsPremium');
 
   const total = products.length;
   const sum = products.reduce((acc,p)=> acc + Number(p.price||0), 0);
   const avg = total ? (sum/total) : 0;
 
   let max = { price: 0, name: '—' };
+  let premiumCount = 0;
   products.forEach(p => {
     const price = Number(p.price||0);
     if (price > max.price) max = { price, name: p.name };
+    if (price >= 60) premiumCount += 1;
   });
 
   if (totalEl) totalEl.textContent = String(total);
   if (avgEl)   avgEl.textContent   = formatCurrency(avg);
   if (maxEl)   maxEl.textContent   = formatCurrency(max.price);
   if (maxName) maxName.textContent = max.name || '—';
+  if (premiumEl) premiumEl.textContent = String(premiumCount);
+}
+
+function applyProductView(){
+  let filtered = productsData.slice();
+
+  if (currentSearch){
+    const needle = currentSearch.toLowerCase();
+    filtered = filtered.filter(p => (p.name || '').toLowerCase().includes(needle));
+  }
+
+  if (currentFilter !== 'all'){
+    filtered = filtered.filter(p => getSegment(p.price).slug === currentFilter);
+  }
+
+  renderProductsTable(filtered);
 }
 
 // Carga/Actualiza
@@ -201,9 +264,9 @@ async function loadProducts() {
     }
 
     const data = await res.json();
-    // NUEVO: render de tabla y KPIs
-    renderProductsTable(data);
-    renderKpis(data);
+    productsData = Array.isArray(data) ? data : [];
+    renderKpis(productsData);
+    applyProductView();
   } catch (e) {
     showError(e.message);
   }
@@ -252,9 +315,23 @@ if (addForm) {
 
       // Recarga tabla y KPIs
       loadProducts();
-      
+
     } catch (e) {
       alert(e.message);
     }
   });
 }
+
+// Búsqueda y filtros visuales
+searchInput?.addEventListener('input', (e) => {
+  currentSearch = (e.target.value || '').trim();
+  applyProductView();
+});
+
+filterBtns.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    currentFilter = btn.dataset.filter || 'all';
+    filterBtns.forEach((b) => b.classList.toggle('filter-btn--active', b === btn));
+    applyProductView();
+  });
+});
