@@ -1,233 +1,36 @@
-<!-- /public/index.html -->
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Mantener solo este CSS; sin laila-ui -->
-  <link rel="stylesheet" href="/styles.css" />
-  <title>LoboCaf – Admin Panel</title>
+  <title>LoboCaf · Acceso</title>
+  <link rel="stylesheet" href="/login.css" />
 </head>
 <body>
-  <!-- Vista de autenticación -->
-  <main class="auth-shell">
-    <section id="auth" class="auth-card">
-      <aside class="auth-info">
-        <div class="auth-info__content">
-          <span class="auth-badge">CRM LoboCaf</span>
-          <h1 class="auth-headline">Administra tu catálogo como un CRM</h1>
-          <p class="auth-copy">
-            Gestiona precios, inventario y desempeño desde un panel diseñado para equipos.
-          </p>
-          <ul class="auth-list">
-            <li>Sincronización segura con Firebase.</li>
-            <li>Monitoreo de métricas clave en tiempo real.</li>
-            <li>Experiencia pensada para la operación diaria.</li>
-          </ul>
-        </div>
-      </aside>
-
-      <div class="auth-form">
-        <div class="auth-brand">
-          <div class="brand-icon">☕</div>
-          <div class="brand-text">
-            <span class="brand-name">LoboCaf</span>
-            <span class="brand-tag">Administrador</span>
-          </div>
-        </div>
-
-        <div class="auth-form__header">
-          <h2>Inicia sesión</h2>
-          <p>Accede con tus credenciales corporativas.</p>
-        </div>
-
-        <div class="field-pill">
-          <label class="sr-only" for="email">E-mail</label>
-          <input id="email" type="email" class="input" placeholder="correo@lobocaf.com" autocomplete="email" required />
-        </div>
-
-        <div class="field-pill field-pill--password">
-          <label class="sr-only" for="password">Password</label>
-          <input id="password" type="password" class="input" placeholder="••••••••" autocomplete="current-password" required />
-          <button type="button" id="togglePwd" class="pwd-toggle" aria-pressed="false" aria-label="Mostrar contraseña">👁</button>
-        </div>
-
-        <button id="loginBtn" class="btn-primary" aria-live="polite">Iniciar sesión</button>
-        <p id="authStatus" class="status" role="status" aria-live="polite"></p>
-      </div>
+  <main class="login-container">
+    <section class="login-card">
+      <header class="login-header">
+        <h1>Bienvenido a LoboCaf</h1>
+        <p>Ingresa tus credenciales para administrar el catálogo.</p>
+      </header>
+      <form id="loginForm" class="login-form" autocomplete="on">
+        <label class="form-field">
+          <span class="form-label">Correo electrónico</span>
+          <input id="email" name="email" type="email" required placeholder="usuario@lobocaf.com" autocomplete="email" />
+        </label>
+        <label class="form-field">
+          <span class="form-label">Contraseña</span>
+          <input id="password" name="password" type="password" required minlength="6" placeholder="Ingresa tu contraseña" autocomplete="current-password" />
+        </label>
+        <button type="submit" id="loginBtn">Iniciar sesión</button>
+        <p id="authStatus" class="form-status" role="status" aria-live="polite"></p>
+      </form>
     </section>
   </main>
 
-  <!-- App (se muestra solo si hay sesión) -->
-  <section id="app" class="crm-shell" style="display:none">
-    <div class="crm-layout">
-      <aside class="crm-sidebar">
-        <div>
-          <div class="sidebar-brand">
-            <span class="brand-icon brand-icon--sidebar">☕</span>
-            <div>
-              <span class="brand-name">LoboCaf</span>
-              <span class="brand-tag">CRM Operativo</span>
-            </div>
-          </div>
-          <nav class="sidebar-nav">
-            <p class="nav-label">Panel</p>
-            <a href="#" class="nav-link nav-link--active">Productos</a>
-            <a href="#" class="nav-link">Reportes</a>
-            <a href="#" class="nav-link">Clientes</a>
-            <a href="#" class="nav-link">Equipos</a>
-          </nav>
-        </div>
-        <div class="sidebar-foot">
-          <div class="sidebar-user">
-            <div class="avatar">LC</div>
-            <div>
-              <span class="user-name">Administrador</span>
-              <span class="user-role">Operaciones</span>
-            </div>
-          </div>
-          <button id="logoutBtn" class="btn btn-logout">Cerrar sesión</button>
-        </div>
-      </aside>
-
-      <div class="crm-main">
-        <header class="crm-header">
-          <div>
-            <h1 class="crm-title">Catálogo de productos</h1>
-            <p class="crm-subtitle">Controla precios y disponibilidad desde una vista CRM.</p>
-          </div>
-          <div class="header-actions">
-            <div class="session-indicator">
-              <span class="session-dot"></span>
-              Sesión activa
-            </div>
-          </div>
-        </header>
-
-        <div class="crm-toolbar">
-          <div class="toolbar-search">
-            <label class="sr-only" for="searchProducts">Buscar productos</label>
-            <span class="toolbar-icon">🔍</span>
-            <input id="searchProducts" class="toolbar-input" placeholder="Buscar por nombre" />
-          </div>
-          <div class="toolbar-filters" role="group" aria-label="Filtrar productos">
-            <button class="filter-btn filter-btn--active" data-filter="all">Todos</button>
-            <button class="filter-btn" data-filter="premium">Premium</button>
-            <button class="filter-btn" data-filter="media">Ticket medio</button>
-            <button class="filter-btn" data-filter="basico">Básicos</button>
-          </div>
-        </div>
-
-        <div class="crm-content">
-          <section class="crm-metrics">
-            <article class="metric-card metric-card--total">
-              <div class="metric-icon">📦</div>
-              <div>
-                <h2 class="metric-title">Total de productos</h2>
-                <p class="metric-value" id="statsTotal">0</p>
-                <p class="metric-foot">Actualizado ahora</p>
-              </div>
-            </article>
-
-            <article class="metric-card metric-card--avg">
-              <div class="metric-icon">💰</div>
-              <div>
-                <h2 class="metric-title">Ticket promedio</h2>
-                <p class="metric-value" id="statsAvg">$0.00</p>
-                <p class="metric-foot">Promedio simple</p>
-              </div>
-            </article>
-
-            <article class="metric-card metric-card--max">
-              <div class="metric-icon">⭐</div>
-              <div>
-                <h2 class="metric-title">Producto destacado</h2>
-                <p class="metric-value" id="statsMax">$0.00</p>
-                <p class="metric-foot" id="statsMaxName">—</p>
-              </div>
-            </article>
-
-            <article class="metric-card metric-card--premium">
-              <div class="metric-icon">🎯</div>
-              <div>
-                <h2 class="metric-title">Premium</h2>
-                <p class="metric-value" id="statsPremium">0</p>
-                <p class="metric-foot">Precio ≥ $60 MXN</p>
-              </div>
-            </article>
-          </section>
-
-          <div class="crm-grid">
-            <section class="crm-panel">
-              <div class="panel-header">
-                <div>
-                  <h2>Agregar producto</h2>
-                  <p>Registra un nuevo elemento en el catálogo.</p>
-                </div>
-                <div class="panel-badge">Nuevo</div>
-              </div>
-              <form id="addForm" class="panel-form">
-                <div class="form-field">
-                  <label for="name">Nombre</label>
-                  <input id="name" class="input" placeholder="Capuchino" required />
-                </div>
-                <div class="form-field">
-                  <label for="price">Precio</label>
-                  <div class="input-composite">
-                    <span class="input-prefix">$</span>
-                    <input id="price" class="input" type="number" step="0.01" placeholder="35.00" required />
-                  </div>
-                  <p class="field-hint">Defínelo en MXN. Se clasificará automáticamente.</p>
-                </div>
-                <div class="form-actions">
-                  <button class="btn btn-primary">Agregar a CRM</button>
-                </div>
-              </form>
-            </section>
-
-            <section class="crm-panel crm-panel--table">
-              <div class="panel-header">
-                <div>
-                  <h2>Productos</h2>
-                  <p>Visualiza el listado actualizado.</p>
-                </div>
-              </div>
-              <div id="emptyState" class="empty-state">Aún no hay productos. Agrega el primero.</div>
-              <div class="table-wrapper">
-                <table class="crm-table" id="productsTable">
-                  <thead>
-                    <tr>
-                      <th>Nombre</th>
-                      <th>Segmento</th>
-                      <th class="right">Precio</th>
-                      <th class="right">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody id="productsTableBody"></tbody>
-                </table>
-              </div>
-            </section>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Firebase Web SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBwFKd3LFrO30e4RguksmnnGjviX2Ynur4",
-      authDomain: "lobocaf-e3f49.firebaseapp.com",
-      projectId: "lobocaf-e3f49",
-      storageBucket: "lobocaf-e3f49.firebasestorage.app",
-      messagingSenderId: "915235060785",
-      appId: "1:915235060785:web:64f688de67911e030d2910",
-      measurementId: "G-XFXH23TBD4"
-    };
-    firebase.initializeApp(firebaseConfig);
-  </script>
-  <script src="/app.js"></script>
+  <script src="/firebase-init.js"></script>
+  <script src="/login.js"></script>
 </body>
 </html>
