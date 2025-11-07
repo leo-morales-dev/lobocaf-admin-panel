@@ -20,7 +20,7 @@ const togglePwd = document.getElementById('togglePwd');
 function setLoading(isLoading) {
   if (!loginBtn) return;
   loginBtn.disabled = isLoading;
-  loginBtn.textContent = isLoading ? 'Ingresando…' : 'Iniciar sesión';
+  loginBtn.textContent = isLoading ? 'Signing in…' : 'Sign in';
 }
 
 function showError(message) {
@@ -46,7 +46,7 @@ function updateLoginEnabled() {
   const ok =
     isValidEmail((emailInput?.value || '').trim()) &&
     ((passwordInput?.value || '').trim()).length >= 6;
-  if (loginBtn.textContent !== 'Ingresando…') {
+  if (loginBtn.textContent !== 'Signing in…') {
     loginBtn.disabled = !ok;
   }
 }
@@ -76,14 +76,14 @@ if (loginBtn) {
 
     try {
       await auth.signInWithEmailAndPassword(email, password);
-      showOk('Ingreso correcto…');
+      showOk('Signed in successfully.');
     } catch (e) {
       const map = {
-        'auth/invalid-email': 'El correo no es válido.',
-        'auth/user-disabled': 'El usuario está deshabilitado.',
-        'auth/user-not-found': 'Usuario no encontrado.',
-        'auth/wrong-password': 'Contraseña incorrecta.',
-        'auth/too-many-requests': 'Demasiados intentos. Intenta más tarde.'
+        'auth/invalid-email': 'The email address is invalid.',
+        'auth/user-disabled': 'This user is disabled.',
+        'auth/user-not-found': 'User not found.',
+        'auth/wrong-password': 'Incorrect password.',
+        'auth/too-many-requests': 'Too many attempts. Try again later.'
       };
       showError(map[e.code] || ('Error: ' + e.message));
     } finally {

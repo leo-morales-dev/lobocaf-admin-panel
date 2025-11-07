@@ -1,12 +1,12 @@
 :root {
   --card:#ffffff;
-  --text:#123126;
-  --muted:#5d7e72;
+  --text:#0f2b21;
+  --muted:#507568;
   --primary:#4cb296;
-  --primary-dark:#2f9379;
+  --primary-dark:#278f72;
   --primary-light:#9be4cb;
-  --ring:rgba(76,178,150,0.35);
-  --shadow:0 25px 60px rgba(9,54,41,0.18);
+  --ring:rgba(76,178,150,0.28);
+  --shadow:0 24px 60px rgba(26,118,91,0.18);
 }
 
 * { box-sizing:border-box; }
@@ -16,7 +16,7 @@ body {
   margin:0;
   font:16px/1.6 "Inter", "Segoe UI", Roboto, Arial, sans-serif;
   color:var(--text);
-  background:linear-gradient(135deg, #4cb296 0%, #64c7aa 40%, #e2fff5 100%);
+  background:linear-gradient(140deg, #f5fffa 0%, #effcf6 45%, #e3f7ef 100%);
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -54,19 +54,20 @@ body.app-active {
   width:100%;
   display:grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  background:rgba(255,255,255,0.22);
-  border-radius:28px;
+  background:linear-gradient(90deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.92) 50%, rgba(76,178,150,0.92) 50%, rgba(52,150,120,0.92) 100%);
+  border-radius:32px;
   box-shadow:var(--shadow);
   overflow:hidden;
   backdrop-filter:blur(30px);
 }
 
 .login-card__form {
-  background:rgba(255,255,255,0.92);
-  padding:48px 56px;
+  background:transparent;
+  padding:56px 64px;
   display:flex;
   flex-direction:column;
-  gap:18px;
+  gap:20px;
+  justify-content:center;
 }
 
 .login-card__heading {
@@ -77,7 +78,7 @@ body.app-active {
   font-size:13px;
   font-weight:600;
   text-transform:uppercase;
-  letter-spacing:0.18em;
+  letter-spacing:0.32em;
   color:var(--muted);
   display:block;
   margin-bottom:12px;
@@ -85,34 +86,31 @@ body.app-active {
 
 .login-title {
   margin:0 0 8px;
-  font-size:32px;
+  font-size:36px;
   font-weight:800;
+  letter-spacing:0.01em;
 }
 
 .login-subtitle {
   margin:0;
-  color:rgba(18,49,38,0.7);
+  color:rgba(15,43,33,0.65);
 }
 
-.field-with-icon {
+.pill-field {
+  position:relative;
   display:flex;
   align-items:center;
-  gap:12px;
-  background:#ffffff;
-  border-radius:16px;
+  background:rgba(255,255,255,0.96);
+  border-radius:999px;
   border:1px solid rgba(76,178,150,0.18);
-  padding:10px 14px;
-  box-shadow:0 12px 30px rgba(20,102,79,0.08);
+  padding:10px 22px;
+  box-shadow:0 18px 40px rgba(76,178,150,0.15);
+  transition:border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.field-with-icon:focus-within {
+.pill-field:focus-within {
   border-color:var(--primary);
-  box-shadow:0 0 0 4px var(--ring);
-}
-
-.icon {
-  font-size:18px;
-  opacity:0.8;
+  box-shadow:0 0 0 4px var(--ring), 0 20px 46px rgba(76,178,150,0.18);
 }
 
 .input {
@@ -122,19 +120,32 @@ body.app-active {
   font-size:15px;
   color:var(--text);
   background:transparent;
+  padding:6px 0;
 }
 
-.input::placeholder { color:rgba(18,49,38,0.45); }
+.pill-field .input { padding-right:40px; }
 
-.btn-ghost {
+.input::placeholder { color:rgba(15,43,33,0.45); }
+
+.pill-field .btn-ghost {
   border:0;
   background:transparent;
   cursor:pointer;
-  font-size:16px;
+  font-size:18px;
+  color:var(--primary);
   transition:transform 0.2s ease;
+  position:absolute;
+  right:18px;
+  top:50%;
+  transform:translateY(-50%);
 }
 
-.btn-ghost:hover { transform:scale(1.1); }
+.pill-field .btn-ghost:hover { transform:translateY(-50%) scale(1.1); }
+.pill-field .btn-ghost:focus-visible {
+  outline:none;
+  box-shadow:0 0 0 3px var(--ring);
+  border-radius:999px;
+}
 
 .btn {
   display:inline-flex;
@@ -159,14 +170,14 @@ body.app-active {
 
 .btn--main {
   width:100%;
-  background:linear-gradient(135deg, #4cb296, #2f9379);
+  background:linear-gradient(135deg, #4cb296 0%, #2f9379 100%);
   color:#ffffff;
-  box-shadow:0 16px 30px rgba(47,147,121,0.35);
+  box-shadow:0 20px 40px rgba(47,147,121,0.35);
 }
 
 .btn--main:hover:not(:disabled) {
   transform:translateY(-1px);
-  box-shadow:0 20px 36px rgba(47,147,121,0.4);
+  box-shadow:0 26px 46px rgba(47,147,121,0.4);
 }
 
 .status {
@@ -179,12 +190,12 @@ body.app-active {
 .status--ok { color:#065f46; }
 
 .login-card__aside {
-  background:linear-gradient(160deg, rgba(76,178,150,0.95) 0%, rgba(47,147,121,0.95) 65%, rgba(34,113,92,0.95) 100%);
+  background:linear-gradient(160deg, rgba(76,178,150,0.96) 0%, rgba(58,156,126,0.96) 55%, rgba(44,132,107,0.96) 100%);
   color:#ecfffb;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:48px;
+  padding:56px;
 }
 
 .welcome-block {
@@ -194,7 +205,7 @@ body.app-active {
 
 .welcome-title {
   margin:0 0 14px;
-  font-size:30px;
+  font-size:32px;
   font-weight:800;
   letter-spacing:0.02em;
 }
@@ -207,8 +218,12 @@ body.app-active {
 
 @media (max-width: 900px) {
   body { padding:40px 16px; }
-  .login-card { grid-template-columns:1fr; }
-  .login-card__aside { order:-1; padding:36px; text-align:center; }
+  .login-card {
+    grid-template-columns:1fr;
+    background:linear-gradient(180deg, rgba(76,178,150,0.18) 0%, rgba(255,255,255,0.94) 55%, rgba(52,150,120,0.92) 100%);
+  }
+  .login-card__form { padding:48px 36px; }
+  .login-card__aside { order:-1; padding:40px 32px; text-align:center; }
   .welcome-block { max-width:none; text-align:center; }
 }
 
