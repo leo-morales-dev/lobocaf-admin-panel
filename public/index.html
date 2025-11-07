@@ -7,41 +7,62 @@
   <title>LoboCaf – Admin Panel</title>
 </head>
 <body>
-  <main class="auth-wrapper">
-    <section id="auth" class="login-card">
-      <div class="login-card__form">
-        <div class="login-card__heading">
-          <span class="eyebrow">Hello!</span>
+  <!-- Vista de autenticación -->
+  <main class="auth-shell">
+    <section id="auth" class="login-slab">
+      <!-- Columna izquierda: formulario -->
+      <div class="login-left">
+        <div class="login-header">
+          <p class="hello">Hello!</p>
           <h1 class="login-title">Sign into your account</h1>
-          <p class="login-subtitle">Use your LoboCaf admin credentials to continue.</p>
+          <p class="login-subtitle">Use your LoboCaf admin credentials.</p>
         </div>
 
-        <label for="email" class="sr-only">E-mail</label>
-        <div class="pill-field">
-          <input id="email" type="email" class="input" placeholder="E-mail" autocomplete="email" required />
+        <div class="field-pill">
+          <label class="sr-only" for="email">E-mail</label>
+          <input id="email"
+                 type="email"
+                 class="input"
+                 placeholder="E-mail"
+                 autocomplete="email"
+                 required />
         </div>
 
-        <label for="password" class="sr-only">Password</label>
-        <div class="pill-field">
-          <input id="password" type="password" class="input" placeholder="Password"
-                 autocomplete="current-password" required />
-          <button type="button" id="togglePwd" class="btn-ghost" aria-pressed="false" aria-label="Show password">👁</button>
+        <div class="field-pill field-pill--password">
+          <label class="sr-only" for="password">Password</label>
+          <input id="password"
+                 type="password"
+                 class="input"
+                 placeholder="Password"
+                 autocomplete="current-password"
+                 required />
+          <button type="button"
+                  id="togglePwd"
+                  class="pwd-toggle"
+                  aria-pressed="false"
+                  aria-label="Show password">👁</button>
         </div>
 
-        <button id="loginBtn" class="btn btn--main" aria-live="polite">Sign in</button>
+        <button id="loginBtn" class="btn-primary" aria-live="polite">
+          Sign in
+        </button>
+
         <p id="authStatus" class="status" role="status" aria-live="polite"></p>
       </div>
 
-      <aside class="login-card__aside">
-        <div class="welcome-block">
+      <!-- Columna derecha: panel de bienvenida -->
+      <aside class="login-right">
+        <div class="welcome-box">
           <h2 class="welcome-title">Welcome Back!</h2>
-          <p class="welcome-text">We're glad to see you again. Manage every LoboCaf product effortlessly from this panel.</p>
+          <p class="welcome-text">
+            Administra los productos de LoboCaf de forma segura desde este panel.
+          </p>
         </div>
       </aside>
     </section>
   </main>
 
-
+  <!-- App (se muestra solo si hay sesión) -->
   <section id="app" style="display:none">
     <div class="dash">
       <!-- Métricas -->
@@ -63,7 +84,7 @@
         </div>
       </div>
 
-      <!-- Acciones -->
+      <!-- Form -->
       <div class="card form-card">
         <h2 class="section-title">Agregar producto</h2>
         <form id="addForm" class="form-grid">
@@ -84,7 +105,7 @@
       <!-- Tabla -->
       <div class="card table-card">
         <h2 class="section-title">Productos</h2>
-        <div id="emptyState" class="empty">Aún no hay productos. Agrega el primero con el formulario superior.</div>
+        <div id="emptyState" class="empty">Aún no hay productos. Agrega el primero.</div>
         <div class="table-scroll">
           <table class="table" id="productsTable">
             <thead>
@@ -103,13 +124,10 @@
     </div>
   </section>
 
-
-  <!-- Firebase Web SDK (compat v9) para usar la API global `firebase.*` -->
+  <!-- Firebase Web SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
   <script>
-    // Tu configuración real de Firebase (pegada desde la consola)
     const firebaseConfig = {
       apiKey: "AIzaSyBwFKd3LFrO30e4RguksmnnGjviX2Ynur4",
       authDomain: "lobocaf-e3f49.firebaseapp.com",
@@ -119,11 +137,8 @@
       appId: "1:915235060785:web:64f688de67911e030d2910",
       measurementId: "G-XFXH23TBD4"
     };
-    // Inicializa con el SDK compat (coincide con el front del starter)
     firebase.initializeApp(firebaseConfig);
   </script>
-
-  <!-- Lógica del panel (login, fetch a /api/products, etc.) -->
   <script src="/app.js"></script>
 </body>
 </html>
