@@ -9,39 +9,28 @@
 <body>
   <main class="auth-wrapper">
     <section id="auth" class="login-card">
-      <div class="login-card__form">
+      <div class="login-card__inner">
         <div class="login-card__heading">
-          <span class="eyebrow">Hola de nuevo</span>
-          <h1 class="login-title">Inicia sesión</h1>
-          <p class="login-subtitle">Accede con el correo y contraseña que tienes registrados en Firebase.</p>
+          <span class="eyebrow">Panel LoboCaf</span>
+          <h1 class="login-title">Login</h1>
+          <p class="login-subtitle">Ingresa tus credenciales para administrar el contenido.</p>
         </div>
 
-        <label for="email" class="sr-only">Correo</label>
-        <div class="field-with-icon">
-          <span class="icon" aria-hidden="true">📧</span>
-          <input id="email" type="email" class="input" placeholder="correo@ejemplo.com"
-                autocomplete="email" required />
+        <label for="email" class="sr-only">E-mail</label>
+        <div class="pill-field pill-field--email">
+          <input id="email" type="email" class="input" placeholder="E-mail" autocomplete="email" required />
         </div>
 
-        <label for="password" class="sr-only">Contraseña</label>
-        <div class="field-with-icon">
-          <span class="icon" aria-hidden="true">🔒</span>
-          <input id="password" type="password" class="input" placeholder="Contraseña"
-                autocomplete="current-password" required />
-          <button type="button" id="togglePwd" class="btn-ghost"
-                  aria-pressed="false" aria-label="Mostrar contraseña">👁</button>
+        <label for="password" class="sr-only">Password</label>
+        <div class="pill-field pill-field--password">
+          <input id="password" type="password" class="input" placeholder="Password"
+                 autocomplete="current-password" required />
+          <button type="button" id="togglePwd" class="btn-ghost" aria-pressed="false" aria-label="Show password">👁</button>
         </div>
 
-        <button id="loginBtn" class="btn btn--main" aria-live="polite">Iniciar sesión</button>
+        <button id="loginBtn" class="btn btn--main" aria-live="polite">Sign in</button>
         <p id="authStatus" class="status" role="status" aria-live="polite"></p>
       </div>
-
-      <aside class="login-card__aside">
-        <div class="welcome-block">
-          <h2 class="welcome-title">¡Bienvenido!</h2>
-          <p class="welcome-text">Mantén actualizado el catálogo de LoboCaf en cuestión de segundos y controla todos tus productos desde un mismo lugar.</p>
-        </div>
-      </aside>
     </section>
   </main>
 
