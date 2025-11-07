@@ -1,31 +1,39 @@
+const express = require('express');
+const { getDb } = require('../db');
+const { verifyAuth } = require('../middleware/auth');
 
-import { Router } from 'express';
-import { getDb } from '../db.js';
-import { verifyAuth } from '../middleware/auth.js';
+const router = express.Router();
 
-const router = Router();
-
-// All product routes require auth
 router.use(verifyAuth);
 
-router.get('/', (req, res) => {
+router.get('/', (_req, res) => {
   const db = getDb();
   db.all('SELECT id, name, price FROM products ORDER BY id DESC', [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
+    if (err) {
+      return res.status(500).json({ error: 'DB error' });
+    }
+    res.json(rows || []);
   });
 });
 
 router.post('/', (req, res) => {
-  const { name, price } = req.body;
-  if (!name || typeof price !== 'number') {
-    return res.status(400).json({ error: 'name (string) and price (number) are required' });
-  }
   const db = getDb();
-  db.run('INSERT INTO products(name, price) VALUES(?,?)', [name, price], function(err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.status(201).json({ id: this.lastID, name, price });
+  const { name, price } = req.body || {};
+  const n = typeof name === 'string' ? name.trim() : '';
+  const p = Number(price);
+
+  if (!n || Number.isNaN(p) || p < 0) {
+    return res.status(400).json({ error: 'Nombre y precio válidos son requeridos' });
+  }
+
+  const stmt = db.prepare('INSERT INTO products (name, price) VALUES (?, ?)');
+  stmt.run(n, p, function runCallback(err) {
+    if (err) {
+      return res.status(500).json({ error: 'DB error' });
+    }
+    res.status(201).json({ id: this.lastID, name: n, price: p });
   });
+  stmt.finalize();
 });
 
-export default router;
+module.exports = router;
