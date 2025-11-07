@@ -36,9 +36,17 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', ts: new Date().toISOString() });
 });
 
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(publicDir, 'index.html'));
+});
+
+app.get('/crm', (_req, res) => {
+  res.sendFile(path.join(publicDir, 'crm.html'));
+});
+
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api') || req.path.startsWith('/sim')) return next();
-  res.sendFile(path.join(publicDir, 'index.html'));
+  res.redirect('/');
 });
 
 if (require.main === module) {
